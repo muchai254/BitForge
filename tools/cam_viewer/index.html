@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ESP32-CAM viewer</title>
+<style>
+  :root { --ok: #1f9d55; --warn: #d69e2e; --bg: #111; --fg: #eee; --muted: #999; }
+  body { margin: 0; padding: 16px; background: var(--bg); color: var(--fg); font: 15px system-ui, sans-serif; }
+  h1 { font-size: 18px; margin: 0 0 12px; }
+  .wrap { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
+  .cam { position: relative; border: 6px solid #333; border-radius: 8px; transition: border-color .15s; }
+  .cam img { display: block; width: 480px; height: 360px; image-rendering: pixelated; background: #000; }
+  .cam.found { border-color: var(--warn); }
+  .cam.scanned { border-color: var(--ok); }
+  #status { margin-top: 10px; font-size: 20px; font-weight: 600; min-height: 28px; }
+  #status.ok { color: var(--ok); } #status.warn { color: var(--warn); }
+  .side { flex: 1; min-width: 300px; }
+  .scan { background: #1b1b1b; border-left: 4px solid var(--ok); padding: 8px 10px; margin-bottom: 8px; border-radius: 4px; }
+  .scan .meta { color: var(--muted); font-size: 12px; margin-bottom: 4px; }
+  .scan .text { font-family: ui-monospace, monospace; word-break: break-all; white-space: pre-wrap; }
+  .bad { color: #e53e3e; }
+  #stats, #log { color: var(--muted); font-family: ui-monospace, monospace; font-size: 12px; white-space: pre-wrap; }
+  button { background: #333; color: var(--fg); border: 1px solid #555; border-radius: 4px; padding: 6px 10px; margin-right: 6px; cursor: pointer; }
+</style>
+</head>
+<body>
+<h1>ESP32-CAM viewer <span id="conn" style="font-size:13px;color:var(--muted)"></span></h1>
+<div id="banner" style="display:none;background:#742a2a;color:#fff;padding:8px 12px;border-radius:4px;margin-bottom:12px">
+  Camera disconnected. Reconnecting automatically; the preview below is the last frame received.
+</div>
+<div class="wrap">
+  <div>
+    <div class="cam" id="cam"><img id="img" alt="waiting for camera preview..."></div>
+    <div id="status">Waiting for camera...</div>
+    <div style="margin-top:10px">
+      <button onclick="cmd('l')">Flash LED on/off</button>
+    </div>
+    <div style="margin-top:8px">
+      Exposure level <button onclick="cmd('e')">-</button><button onclick="cmd('E')">+</button>
+      Contrast <button onclick="cmd('c')">-</button><button onclick="cmd('C')">+</button>
+      Brightness <button onclick="cmd('b')">-</button><button onclick="cmd('B')">+</button>
+    </div>
+    <div style="margin-top:8px">
+      <button onclick="cmd('x')">Auto/manual exposure</button>
+      Manual value <button onclick="cmd('a')">-50</button><button onclick="cmd('A')">+50</button>
+      <button onclick="cmd('r')">Reset</button>
+      <div style="color:var(--muted);font-size:12px;margin-top:4px">Current settings appear as "[tune]" lines in the console on the right.</div>
+    </div>
+    <div id="stats" style="margin-top:10px"></div>
+  </div>
+  <div class="side">
+    <div style="margin-bottom:8px">Scanned codes (newest first): <b id="count">0</b></div>
+    <div id="scans"></div>
+    <div style="margin-top:16px;color:var(--muted)">Console:</div>
+    <div id="log"></div>
+  </div>
+</div>
+<script>
+let since = 0, lastSeq = 0, scannedUntil = 0, audio = null;
+const $ = (id) => document.getElementById(id);
+
+function beep() {
+  try {
+    audio = audio || new AudioContext();
+    const o = audio.createOscillator(), g = audio.createGain();
+    o.frequency.value = 1200; g.gain.value = 0.15;
+    o.connect(g); g.connect(audio.destination);
+    o.start(); o.stop(audio.currentTime + 0.12);
+  } catch (e) {}
+}
+function cmd(c) { fetch('/cmd?c=' + c, { method: 'POST' }); }
+function esc(s) { return s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])); }
+
+async function poll() {
+  try {
+    const s = await (await fetch('/state?since=' + since)).json();
+    $('conn').textContent = s.connected ? '(connected)' : '(serial port not connected: reconnecting...)';
+    $('banner').style.display = s.connected ? 'none' : 'block';
+    if (s.frameSeq !== lastSeq) { lastSeq = s.frameSeq; $('img').src = '/frame.bmp?' + lastSeq; }
+    for (const e of s.events) {
+      since = e.id;
+      const crc = e.crcOk === true ? 'CRC OK' : e.crcOk === false ? '<span class="bad">CRC MISMATCH</span>' : 'CRC not checkable here (non-printable bytes)';
+      const div = document.createElement('div');
+      div.className = 'scan';
+      div.innerHTML = `<div class="meta">#${e.id} at ${e.time}, ${e.len} bytes, crc ${e.crc}, ${crc}</div><div class="text">${esc(e.text)}</div>`;
+      $('scans').prepend(div);
+      $('count').textContent = e.id;
+      scannedUntil = Date.now() + 1500;
+      beep();
+    }
+    const cam = $('cam'), st = $('status');
+    if (Date.now() < scannedUntil) {
+      cam.className = 'cam scanned'; st.className = 'ok'; st.textContent = 'SCANNED ✓';
+    } else if (s.codes > 0) {
+      cam.className = 'cam found'; st.className = 'warn'; st.textContent = 'QR code in view: hold steady...';
+    } else {
+      cam.className = 'cam'; st.className = ''; st.textContent = lastSeq ? 'No QR code in view' : 'Waiting for camera...';
+    }
+    $('stats').textContent = s.stats + '\n[link] frames ok ' + s.link.framesOk +
+      ', torn ' + s.link.framesTorn + ', junk lines ' + s.link.junkLines;
+    $('log').textContent = s.log.join('\n');
+  } catch (e) {
+    $('status').textContent = 'Viewer not running?';
+  }
+  setTimeout(poll, 60);
+}
+poll();
+</script>
+</body>
+</html>

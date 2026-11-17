@@ -1,0 +1,15 @@
+QR code encoder, vendored for airgap_signer (docs/patches.md §3).
+
+Source: ricmoo/QRCode 0.0.1 (Arduino Library Manager "QRCode", author Richard Moore),
+https://github.com/ricmoo/qrcode, MIT licence (LICENSE.txt).
+Copied from the installed library: src/qrcode.c -> qrgen.c, src/qrcode.h -> qrgen.h.
+
+Why vendored: the ESP32 core ships its own qrcode.h, which shadows the library's.
+
+Local changes:
+1. qrgen.c includes "qrgen.h"; the "#pragma mark" lines are removed (-Wunknown-pragmas).
+2. qrgen.h include guard renamed __QRCODE_H_ -> __QRGEN_H_.
+3. qrcode_initBytes(): returns -1 for version outside 1..40, ecc > 3, or data that
+   doesn't fit the version/ECC capacity. Upstream had "@TODO: Return error if data
+   is too big" and wrote past a stack buffer instead.
+4. qrcode_getModule(): dropped the always-false 'x < 0' / 'y < 0' tests on unsigned values (-Wtype-limits).

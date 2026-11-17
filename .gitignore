@@ -1,0 +1,25 @@
+# Build output
+airgap_wallet/build/
+airgap_qrcam/build/
+*.bin
+*.elf
+*.map
+
+# Dependencies
+node_modules/
+
+logs/
+uBitcoin/
+plan.md
+docs/*
+tools/ur/fixtures/
+
+# Local and OS files
+.vscode/
+.idea/
+*.log
+*.tmp
+.env
+Thumbs.db
+desktop.ini
+.DS_Store

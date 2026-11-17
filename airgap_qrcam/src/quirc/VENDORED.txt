@@ -1,0 +1,4 @@
+quirc vendored from https://github.com/dlbeer/quirc
+commit 927d680904dc95fdff4cd9d022eb374b438ff8f2 (2025-05-20)
+Files: lib/*.c lib/*.h + LICENSE (ISC).
+Local change: quirc_internal.h selects single-precision float (see docs/patches.md section 6).

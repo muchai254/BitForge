@@ -1,0 +1,15 @@
+# airgap_signer wallet partition table (used automatically: the core copies
+# partitions.csv from the sketch folder). Same as the core's default.csv but
+# WITHOUT the coredump and spiffs partitions:
+# - coredump: the precompiled core has CONFIG_ESP_COREDUMP_ENABLE_TO_FLASH=1,
+#   so any crash would write every task's stack (which can hold seed words,
+#   word indices, dice rolls) to flash. With no coredump partition there is
+#   nowhere to write.
+# - spiffs: no filesystem is used; a stateless signer has nothing to store.
+# The nvs partition stays because initArduino() initialises it; nothing in
+# this firmware writes to it.
+# Name,   Type, SubType, Offset,  Size, Flags
+nvs,      data, nvs,     0x9000,  0x5000,
+otadata,  data, ota,     0xe000,  0x2000,
+app0,     app,  ota_0,   0x10000, 0x140000,
+app1,     app,  ota_1,   0x150000,0x140000,

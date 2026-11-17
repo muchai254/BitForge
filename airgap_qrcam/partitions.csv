@@ -1,0 +1,9 @@
+# airgap_signer camera partition table (used automatically: the core copies
+# partitions.csv from the sketch folder). Same as the core's huge_app.csv but
+# WITHOUT the coredump and spiffs partitions: the precompiled core has
+# CONFIG_ESP_COREDUMP_ENABLE_TO_FLASH=1, and while decoding a SeedQR the
+# camera's stack holds the seed's bits, so a crash would write them to flash.
+# Name,   Type, SubType, Offset,  Size, Flags
+nvs,      data, nvs,     0x9000,  0x5000,
+otadata,  data, ota,     0xe000,  0x2000,
+app0,     app,  ota_0,   0x10000, 0x300000,

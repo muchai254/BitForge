@@ -1,0 +1,1 @@
+{"name":"cam_viewer","version":"1.0.0","private":true,"description":"Development viewer for the airgap_qrcam ESP32-CAM","main":"viewer.js","dependencies":{"serialport":"^13.0.0"}}
