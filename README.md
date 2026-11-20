@@ -19,42 +19,57 @@ The seed is never stored. You load it each time you start the device, either by 
 
 ## What's in this repo
 
-```
-airgap_wallet/        Firmware for the ESP32 DevKit (the signer)
-  airgap_wallet.ino     main menu and screens
-  config.h              pins and settings (must match docs/wiring.md)
-  display.*, touch.*, calibrate.*, ui.*    screen, touch input, buttons and keyboard
-  entropy.*, seedgen.*, seedload.*, seedqr.*, keys.*, session.*, lock.*, secure_mem.*
-                        creating, loading, holding and wiping the seed
-  descriptor.*, export_screen.*, address_screen.*
-                        watch-only export to Sparrow, address check
-  camlink.*, scan_screen.*                 receiving QR data from the camera
-  psbt_scan.*, psbt_parse.*, psbt_review.*, psbt_review_screen.*, psbt_sign.*, psbt_flow.*
-                        the signing pipeline: scan, parse, verify, review, sign
-  qr_out.*              showing QR codes (static and animated)
-  ur_selftest.*, psbt_selftest.*           on-device self-tests (+ generated *_vectors.h)
-  src/ur/               UR (animated QR) encoder/decoder, ported from bc-ur
-  src/qrgen/            QR code generator (vendored, see docs/patches.md §3)
-  partitions.csv        flash layout (no core-dump partition, so no RAM is written to flash)
+| Folder | What it holds |
+|---|---|
+| [`airgap_wallet/`](airgap_wallet) | Firmware for the ESP32 DevKit, the signer |
+| [`airgap_qrcam/`](airgap_qrcam) | Firmware for the ESP32-CAM, the QR scanner |
+| [`docs/`](docs) | Wiring, library patches and protocol notes |
+| [`tools/`](tools) | Node.js helpers that run on your computer |
+| [`images/`](images) | Photos for this README |
 
-airgap_qrcam/         Firmware for the ESP32-CAM (the QR scanner)
-  airgap_qrcam.ino      camera, QR decoding, debug console
-  link_frame.*          the frame format sent to the wallet
-  src/quirc/            QR decoder (vendored, see docs/patches.md §6)
+### `airgap_wallet/`
 
-docs/
-  wiring.md             how to connect everything
-  patches.md            library changes you need to apply
-  protocol.md           camera link format, Sparrow QR formats, SeedQR
+| Files | What they do |
+|---|---|
+| `airgap_wallet.ino` | Main menu and screens |
+| `config.h` | Pins and settings. These must match [docs/wiring.md](docs/wiring.md) |
+| `display.*`, `touch.*`, `calibrate.*`, `ui.*` | Screen, touch input, buttons and keyboard |
+| `entropy.*`, `seedgen.*`, `seedload.*`, `seedqr.*`, `keys.*`, `session.*`, `lock.*`, `secure_mem.*` | Creating, loading, holding and wiping the seed |
+| `descriptor.*`, `export_screen.*`, `address_screen.*` | Watch-only export to Sparrow and the address check |
+| `camlink.*`, `scan_screen.*` | Receiving QR data from the camera |
+| `psbt_scan.*`, `psbt_parse.*`, `psbt_review.*`, `psbt_review_screen.*`, `psbt_sign.*`, `psbt_flow.*` | The signing pipeline: scan, parse, verify, review and sign |
+| `qr_out.*` | Showing QR codes, static and animated |
+| `ur_selftest.*`, `psbt_selftest.*`, `*_vectors.h` | On-device self-tests and their generated test data |
+| `src/ur/` | UR (animated QR) encoder and decoder, ported from bc-ur |
+| `src/qrgen/` | QR code generator, copied in (see [patch 3](docs/patches.md#3-qrcode-name-clash-so-its-copied-into-the-repo)) |
+| `partitions.csv` | Flash layout. It has no core-dump partition, so RAM is never written to flash |
 
-tools/                PC-side helpers (Node.js)
-  cam_viewer/           live camera preview, link checker, serial logger, scan statistics
-  link_fuzz/            turns the CAM into a fuzzer for the camera link
-  pc_checks/            independent checks of fingerprints, addresses, descriptors
-  psbt_fixtures/        builds the 82 test PSBTs for the on-device PSBT self-test
-  psbt_show/            shows a saved PSBT file as an animated QR in your browser
-  ur/                   UR decoder in JS, its tests, and the UR self-test generator
-```
+### `airgap_qrcam/`
+
+| Files | What they do |
+|---|---|
+| `airgap_qrcam.ino` | Camera, QR decoding and the debug console |
+| `link_frame.*` | The frame format sent to the wallet |
+| `src/quirc/` | QR decoder, copied in (see [patch 6](docs/patches.md#6-quirc-use-single-precision-floats)) |
+
+### `docs/`
+
+| File | What it covers |
+|---|---|
+| [`wiring.md`](docs/wiring.md) | How to connect everything |
+| [`patches.md`](docs/patches.md) | Library changes you need to apply |
+| [`protocol.md`](docs/protocol.md) | The camera link format, Sparrow's QR formats and SeedQR |
+
+### `tools/`
+
+| Folder | What it does |
+|---|---|
+| [`cam_viewer/`](tools/cam_viewer) | Live camera preview, link checker, serial logger and scan statistics |
+| [`link_fuzz/`](tools/link_fuzz) | Turns the CAM into a fuzzer for the camera link |
+| [`pc_checks/`](tools/pc_checks) | Independent checks of fingerprints, addresses and descriptors |
+| [`psbt_fixtures/`](tools/psbt_fixtures) | Builds the 82 test PSBTs for the on-device PSBT self-test |
+| [`psbt_show/`](tools/psbt_show) | Shows a saved PSBT file as an animated QR in your browser |
+| [`ur/`](tools/ur) | UR decoder in JavaScript, its tests and the UR self-test generator |
 
 ## What you need
 
