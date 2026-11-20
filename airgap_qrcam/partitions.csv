@@ -1,4 +1,4 @@
-# airgap_signer camera partition table (used automatically: the core copies
+# BitForge camera partition table (used automatically: the core copies
 # partitions.csv from the sketch folder). Same as the core's huge_app.csv but
 # WITHOUT the coredump and spiffs partitions: the precompiled core has
 # CONFIG_ESP_COREDUMP_ENABLE_TO_FLASH=1, and while decoding a SeedQR the

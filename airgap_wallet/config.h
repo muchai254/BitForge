@@ -1,4 +1,4 @@
-// Hardware and policy configuration for the airgap_signer wallet (ESP32 DevKit).
+// Hardware and policy configuration for the BitForge wallet (ESP32 DevKit).
 // Must match docs/wiring.md.
 #pragma once
 

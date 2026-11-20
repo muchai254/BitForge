@@ -1,4 +1,4 @@
-// airgap_signer: ESP32-CAM QR scanner firmware.
+// BitForge: ESP32-CAM QR scanner firmware.
 //
 // Grabs grayscale frames, decodes QR codes with quirc, and sends each decoded
 // payload to the wallet as a framed line on GPIO14 (TX only; see

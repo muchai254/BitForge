@@ -18,7 +18,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdlib.h>
-/* airgap_signer local change: must be set before the tgmath/math choice below
+/* BitForge local change: must be set before the tgmath/math choice below
  * (QUIRC_FLOAT_TYPE float is set in quirc_internal.h). */
 #ifndef QUIRC_USE_TGMATH
 #define QUIRC_USE_TGMATH 1

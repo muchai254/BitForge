@@ -762,7 +762,7 @@ uint16_t qrcode_getBufferSize(uint8_t version) {
     return bb_getGridSizeBytes(4 * version + 17);
 }
 
-// airgap_signer local change: upstream has "@TODO: Return error if data is too
+// BitForge local change: upstream has "@TODO: Return error if data is too
 // big" here and would then write past codewordBytes[] (a stack buffer). This
 // returns -1 for a bad version/ecc or data that doesn't fit, before anything
 // is indexed or written.
@@ -870,7 +870,7 @@ int8_t qrcode_initText(QRCode *qrcode, uint8_t *modules, uint8_t version, uint8_
 }
 
 bool qrcode_getModule(QRCode *qrcode, uint8_t x, uint8_t y) {
-    if (x >= qrcode->size || y >= qrcode->size) { // airgap_signer: x, y are unsigned (was "x < 0 || ...")
+    if (x >= qrcode->size || y >= qrcode->size) { // BitForge: x, y are unsigned (was "x < 0 || ...")
         return false;
     }
 

@@ -1,4 +1,4 @@
-// airgap_signer: ESP32 DevKit wallet firmware (signet only).
+// BitForge: ESP32 DevKit wallet firmware (signet only).
 // Serial output is debug-only and never contains secrets.
 #include <esp_system.h>
 #include "config.h"
@@ -41,7 +41,7 @@ static const char *resetReasonName(esp_reset_reason_t r) {
 static void bootScreen(uint16_t id) {
   tft.fillScreen(COL_BLACK);
   drawBitcoinLogo(tft.width() / 2, 130, 95);
-  drawCentredText("airgap signer", 245, 2, COL_WHITE);
+  drawCentredText("BitForge", 245, 2, COL_WHITE);
   drawCentredText("SIGNET PROTOTYPE", 270, 1, COL_BTC_ORANGE);
   char buf[32];
   snprintf(buf, sizeof buf, "fw %s  LCD 0x%04X", FIRMWARE_VERSION, id);
@@ -131,7 +131,7 @@ static void keyTestVectorScreen() {
 void setup() {
   Serial.begin(115200);
   delay(200);
-  Serial.printf("\nairgap_signer %s\n", FIRMWARE_VERSION);
+  Serial.printf("\nBitForge %s\n", FIRMWARE_VERSION);
   Serial.printf("reset reason: %s\n", resetReasonName(esp_reset_reason()));
 
   uint16_t id = displayBegin();

@@ -5,7 +5,7 @@
 
 #define ENTROPY_HW_BYTES 256 // collected from the hardware RNG
 #define ENTROPY_MIN_DICE 99  // d6 rolls; 99 * log2(6) = 255.9 bits
-#define ENTROPY_DOMAIN "airgap_signer-v1"
+#define ENTROPY_DOMAIN "BitForge-v1"
 
 // Fills out[0..ENTROPY_HW_BYTES) from the ESP32 hardware RNG with its true
 // random source enabled (bootloader_random_enable(): SAR ADC noise; without

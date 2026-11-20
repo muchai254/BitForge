@@ -1,6 +1,6 @@
-# airgap_signer
+# BitForge
 
-An air-gapped Bitcoin signing device you can build from common hobby boards: an **ESP32 DevKit**, an **ESP32-CAM** and a **2.8" touchscreen shield**. It works with [Sparrow Wallet](https://sparrowwallet.com) on your computer, and the two exchange data only through QR codes. There is no USB data, Wi-Fi or Bluetooth link between them.
+BitForge is an air-gapped Bitcoin signing device you can build from common hobby boards: an **ESP32 DevKit**, an **ESP32-CAM** and a **2.8" touchscreen shield**. It works with [Sparrow Wallet](https://sparrowwallet.com) on your computer, and the two exchange data only through QR codes. There is no USB data, Wi-Fi or Bluetooth link between them.
 
 > ⚠ **This is a prototype for signet, Bitcoin's test network. Never use it with real funds or a real seed.**
 > It has no secure element and no secure boot, and the ESP32 has a radio (unused by the firmware, but present). The firmware is hard-coded to signet.
@@ -139,7 +139,7 @@ To rebuild the self-test data:
 
 - **No stored seed.** Secrets are never written to flash, and the flash layout has no core-dump partition.
 - **No secrets on serial output**, ever.
-- **Everything from the camera is treated as hostile.** Every frame is checked, and PSBTs go through a strict parser written for this project.
+- **Everything from the camera is treated as hostile.** Every frame is checked, and PSBTs go through a strict parser written for BitForge.
 - **The scanned PSBT is never handed to uBitcoin.** The wallet signs a minimal PSBT it rebuilds from values it has verified itself.
 - **Secrets are wiped from RAM** after use: buffers, the stack and the free heap.
 - **No radio code.** Wi-Fi and Bluetooth are never included.

@@ -1,4 +1,4 @@
-QR code encoder, vendored for airgap_signer (docs/patches.md §3).
+QR code encoder, vendored for BitForge (docs/patches.md §3).
 
 Source: ricmoo/QRCode 0.0.1 (Arduino Library Manager "QRCode", author Richard Moore),
 https://github.com/ricmoo/qrcode, MIT licence (LICENSE.txt).

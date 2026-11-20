@@ -1,4 +1,4 @@
-# airgap_signer wallet partition table (used automatically: the core copies
+# BitForge wallet partition table (used automatically: the core copies
 # partitions.csv from the sketch folder). Same as the core's default.csv but
 # WITHOUT the coredump and spiffs partitions:
 # - coredump: the precompiled core has CONFIG_ESP_COREDUMP_ENABLE_TO_FLASH=1,

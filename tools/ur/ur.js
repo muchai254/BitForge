@@ -1,5 +1,5 @@
 // Uniform Resources (BCR-2020-005) + fountain codes (BCR-2020-006): a
-// reference decoder for airgap_signer, ported from Blockchain Commons' bc-ur
+// reference decoder for BitForge, ported from Blockchain Commons' bc-ur
 // C++ library (BSD-2-Clause-Plus-Patent, see LICENSE-bc-ur.txt). It is the
 // yardstick for the wallet's C++ port: same algorithms, same test
 // vectors (test.js). The encoder is here only to run the upstream tests.

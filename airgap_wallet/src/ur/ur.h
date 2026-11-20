@@ -1,5 +1,5 @@
 // Uniform Resources (BCR-2020-005) + fountain codes (BCR-2020-006) decoder
-// for airgap_signer: reads Sparrow's animated "ur:crypto-psbt/..." QRs.
+// for BitForge: reads Sparrow's animated "ur:crypto-psbt/..." QRs.
 // Same algorithms as Blockchain Commons' bc-ur C++ library (BSD-2-Clause-
 // Plus-Patent, see LICENSE-bc-ur.txt), rewritten for a small, hostile-input
 // setting: no exceptions, no STL, fixed limits, every length checked.

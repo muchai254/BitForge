@@ -20,7 +20,7 @@
 #include <assert.h>
 #include <stdlib.h>
 
-/* airgap_signer local change: the ESP32 has a single-precision FPU only. */
+/* BitForge local change: the ESP32 has a single-precision FPU only. */
 #ifndef QUIRC_FLOAT_TYPE
 #define QUIRC_FLOAT_TYPE float
 #define QUIRC_USE_TGMATH 1

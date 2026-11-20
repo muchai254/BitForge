@@ -11,8 +11,11 @@ node_modules/
 logs/
 uBitcoin/
 plan.md
-docs/*
+docs/blog/*
+docs/contrib/*
+docs/private/*
 tools/ur/fixtures/
+docs/progress.md
 
 # Local and OS files
 .vscode/
