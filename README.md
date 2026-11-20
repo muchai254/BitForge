@@ -71,11 +71,7 @@ To wire everything up, follow [docs/wiring.md](docs/wiring.md).
 
 ### 1. Install the tools
 
-You need [arduino-cli](https://arduino.github.io/arduino-cli/) or the Arduino IDE, plus ESP32 board support version **3.3.10**. With arduino-cli, you install the board support like this.
-
-```
-arduino-cli core install esp32:esp32@3.3.10
-```
+Install the [Arduino IDE](https://www.arduino.cc/en/software). Then open **Tools → Board → Boards Manager**, search for **esp32 by Espressif Systems** and install version **3.3.10**.
 
 ### 2. Install the libraries
 
@@ -91,23 +87,17 @@ You'll find the patches in [docs/patches.md](docs/patches.md). Without them the 
 
 ### 3. Flash the ESP32-CAM
 
-Connect the USB-TTL adapter as described in wiring.md §C. Then connect GPIO0 to GND, press RESET and run the upload.
+Open `airgap_qrcam/airgap_qrcam.ino` in the Arduino IDE. Under **Tools**, set the board to **AI Thinker ESP32-CAM** and pick the adapter's port.
 
-```
-arduino-cli compile --upload -p <PORT> --fqbn esp32:esp32:esp32cam airgap_qrcam
-```
-
-When it's done, remove the GPIO0 wire and press RESET again.
+Connect the USB-TTL adapter as described in wiring.md §C. Then connect GPIO0 to GND, press RESET and click **Upload**. When it's done, remove the GPIO0 wire and press RESET again.
 
 ### 4. Flash the DevKit
 
-Hold the **BOOT** button down for the whole upload. When the upload finishes, release it and press EN.
+Open `airgap_wallet/airgap_wallet.ino`. Under **Tools**, set the board to **ESP32 Dev Module** and pick the DevKit's port.
 
-```
-arduino-cli compile --upload -p <PORT> --fqbn esp32:esp32:esp32 airgap_wallet
-```
+Hold the **BOOT** button down and click **Upload**. Keep holding it for the whole upload. When the upload finishes, release it and press EN.
 
-`arduino-cli upload` on its own doesn't recompile, so always use `compile --upload` after you change the code.
+Each sketch folder has its own `partitions.csv`, and the IDE uses it automatically, so you don't need to change the partition scheme.
 
 The touch calibration values in `config.h` belong to the author's screen, and yours will be different. To calibrate, set `TOUCH_CAL_VALID` to 0 and flash. The wallet then runs calibration at boot. Copy the values it shows into `config.h` and set `TOUCH_CAL_VALID` back to 1.
 
