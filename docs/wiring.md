@@ -1,9 +1,6 @@
 # Wiring
 
-This page shows how to connect the three parts:
-- **A.** the 2.8" TFT touch shield to the ESP32 DevKit
-- **B.** the ESP32-CAM to the DevKit (the camera link)
-- **C.** a USB-TTL adapter to the ESP32-CAM, for flashing it
+This page covers three connections. Section A wires the 2.8" TFT touch shield to the ESP32 DevKit. Section B wires the ESP32-CAM to the DevKit, which is the camera link. Section C connects a USB-TTL adapter to the ESP32-CAM so you can flash it.
 
 If you change a pin, change it in `airgap_wallet/config.h` too. The two must match.
 
@@ -32,11 +29,16 @@ The shield is made to sit on an Arduino Uno. Here you connect it to the DevKit w
 
 Leave the shield's SD-card pins (D10–D13) unconnected.
 
-**Why two pins differ from the library defaults:**
-- **GPIO12** is a "strapping" pin, which the ESP32 reads at power-on to choose settings. If the shield pulls it high, the ESP32 sets its flash to 1.8 V and keeps rebooting. Use GPIO22 instead.
-- **GPIO2** is also a strapping pin. If it's used, the DevKit can't enter upload mode by itself. Use GPIO21 instead.
+### Why two pins differ from the library defaults
 
-**Uploading to the DevKit:** hold the **BOOT** button for the whole upload, release it when the upload finishes, then press **EN** to run. On many cheap DevKits the automatic reset into upload mode is unreliable: it releases EN before GPIO0 is pulled low. A 1–10 µF capacitor between EN and GND should fix this, but it hasn't been tested.
+GPIO12 and GPIO2 are both "strapping" pins, which the ESP32 reads at power-on to choose settings.
+
+- If the shield pulls **GPIO12** high, the ESP32 sets its flash to 1.8 V and keeps rebooting. Use GPIO22 instead.
+- If **GPIO2** is used, the DevKit can't enter upload mode by itself. Use GPIO21 instead.
+
+### Uploading to the DevKit
+
+Hold the **BOOT** button for the whole upload, release it when the upload finishes, then press **EN** to run. On many cheap DevKits the automatic reset into upload mode is unreliable, because it releases EN before GPIO0 is pulled low. A 1–10 µF capacitor between EN and GND should fix this, but it hasn't been tested.
 
 ## B. ESP32-CAM → ESP32 DevKit (the camera link)
 
@@ -57,7 +59,7 @@ This is the setup used during development.
 
 ### Without the adapter (not yet tested)
 
-When you no longer need the adapter, power the CAM from the DevKit:
+Once you no longer need the adapter, power the CAM from the DevKit.
 
 | ESP32-CAM | DevKit | Notes |
 |---|---|---|
@@ -66,13 +68,14 @@ When you no longer need the adapter, power the CAM from the DevKit:
 | GND | GND | |
 
 ### Warnings
-- ⚠ **Don't use the CAM pin labelled "GND/R" as ground.** On this board it's connected to the reset line. If you wire it to ground, the CAM stays stuck in reset: it shows no console output and scans nothing, and the wallet receives junk. Use the GND pin next to the 5V pin.
+
+- ⚠ **Don't use the CAM pin labelled "GND/R" as ground.** On this board it's connected to the reset line. If you wire it to ground, the CAM stays stuck in reset. It shows no console output, it scans nothing, and the wallet receives junk. Use the GND pin next to the 5V pin.
 - **Never power the CAM from two 5V sources at once.**
-- **GPIO34 has no internal pull-up resistor.** While the CAM is off, in reset or booting, the wallet receives random bytes. This is harmless: the wallet throws them away and counts them as "skipped". To keep the line quiet, you can add a 10 kΩ resistor from GPIO34 to 3V3.
+- **GPIO34 has no internal pull-up resistor.** While the CAM is off, in reset or booting, the wallet receives random bytes. This is harmless, since the wallet throws them away and counts them as "skipped". If you want to keep the line quiet, add a 10 kΩ resistor from GPIO34 to 3V3.
 
 ## C. Flashing the ESP32-CAM (USB-TTL adapter)
 
-The ESP32-CAM has no USB port. You program it through a USB-TTL adapter, a small USB-to-serial board.
+The ESP32-CAM has no USB port, so you program it through a USB-TTL adapter, a small USB-to-serial board.
 
 | USB-TTL | ESP32-CAM |
 |---|---|
@@ -81,7 +84,8 @@ The ESP32-CAM has no USB port. You program it through a USB-TTL adapter, a small
 | TX | U0R (GPIO3) |
 | RX | U0T (GPIO1) |
 
-**To flash:**
+Then flash the CAM like this.
+
 1. Connect GPIO0 to GND. This puts the CAM into upload mode.
 2. Press RESET on the CAM.
 3. Upload the sketch.
@@ -90,14 +94,13 @@ The ESP32-CAM has no USB port. You program it through a USB-TTL adapter, a small
 
 Disconnect the CAM from the DevKit's 5V while it's on the adapter.
 
-⚠ **5V logic warning.** Many cheap FT232 adapters have one jumper that sets both the supply voltage and the signal voltage. At 3.3V the supply is too weak for the CAM, so you have to set it to 5V. The adapter's TX pin then sends **5V signals into CAM GPIO3**, which is more than the ESP32 is rated for. Protect the pin:
-- **Best:** adapter TX → 1 kΩ → CAM U0R, with a 2 kΩ resistor from CAM U0R to GND. This divides the signal down to about 3.3V.
-- **At least:** a 1–2.2 kΩ resistor in series on that line.
+⚠ **5V logic warning.** Many cheap FT232 adapters have one jumper that sets both the supply voltage and the signal voltage. At 3.3V the supply is too weak for the CAM, so you have to set it to 5V. The adapter's TX pin then sends **5V signals into CAM GPIO3**, which is more than the ESP32 is rated for, so protect that pin.
+
+- The best fix is a divider. Wire adapter TX → 1 kΩ → CAM U0R and add a 2 kΩ resistor from CAM U0R to GND. This brings the signal down to about 3.3V.
+- At the very least, put a 1–2.2 kΩ resistor in series on that line.
 
 ## Free DevKit pins
 
-After wiring A and B, these pins are still free:
-- **Input and output:** 18, 19, 23
-- **Input only:** 35, 36, 39
+After wiring A and B, pins 18, 19 and 23 are still free for input and output, and pins 35, 36 and 39 are free as inputs only.
 
 Avoid 0, 2, 5 and 12, which are strapping pins. Pin 15 is a strapping pin too, but it's already used for LCD_RS.

@@ -1,14 +1,15 @@
 {
   "name": "psbt_show",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
+  "description": "Shows a saved PSBT file as an animated UR QR code in the browser",
+  "main": "show.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "type": "commonjs",
   "dependencies": {
     "qrcode": "^1.5.4"

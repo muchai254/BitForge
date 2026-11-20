@@ -1,6 +1,5 @@
 # Build output
-airgap_wallet/build/
-airgap_qrcam/build/
+build/
 *.bin
 *.elf
 *.map
@@ -8,21 +7,34 @@ airgap_qrcam/build/
 # Dependencies
 node_modules/
 
+# Private notes and local copies
 logs/
 uBitcoin/
 plan.md
-docs/blog/*
-docs/contrib/*
-docs/private/*
-tools/ur/fixtures/
 docs/progress.md
+docs/blog/
+docs/contrib/
+docs/private/
 
-# Local and OS files
+# Captures and saved transactions (may hold wallet data)
+tools/ur/fixtures/
+scans*.txt
+*.psbt
+
+# Patch leftovers
+*.orig
+*.rej
+
+# Editor, tool and OS files
 .vscode/
 .idea/
+.claude/
+*.swp
+*~
 *.log
 *.tmp
 .env
+.env.*
 Thumbs.db
 desktop.ini
 .DS_Store

@@ -1,19 +1,19 @@
 # BitForge
 
-BitForge is an air-gapped Bitcoin signing device you can build from common hobby boards: an **ESP32 DevKit**, an **ESP32-CAM** and a **2.8" touchscreen shield**. It works with [Sparrow Wallet](https://sparrowwallet.com) on your computer, and the two exchange data only through QR codes. There is no USB data, Wi-Fi or Bluetooth link between them.
+BitForge is an air-gapped Bitcoin signing device you can build from common hobby boards. You need an ESP32 DevKit, an ESP32-CAM and a 2.8" touchscreen shield. It works with [Sparrow Wallet](https://sparrowwallet.com) on your computer, and the two only ever exchange data through QR codes. There is no USB data, Wi-Fi or Bluetooth link between them.
 
 > ⚠ **This is a prototype for signet, Bitcoin's test network. Never use it with real funds or a real seed.**
-> It has no secure element and no secure boot, and the ESP32 has a radio (unused by the firmware, but present). The firmware is hard-coded to signet.
+> It has no secure element and no secure boot. The ESP32 also has a radio, which the firmware doesn't use but which is still there. The firmware is hard-coded to signet.
 
 ## How it works
 
-1. Sparrow holds only your public keys (a "watch-only" wallet). It builds an unsigned transaction (a **PSBT**) and shows it as an animated QR code.
-2. The ESP32-CAM scans the QR and sends the data to the wallet over **one wire, in one direction**. The wallet has no way to send data back to the camera.
-3. The wallet works out the amounts, the fee and your change **by itself**, from the transaction data and your keys. It shows them on the touchscreen.
+1. Sparrow holds only your public keys, which makes it a "watch-only" wallet. It builds an unsigned transaction, called a PSBT, and shows it as an animated QR code.
+2. The ESP32-CAM scans the QR and sends the data to the wallet over one wire, in one direction. The wallet has no way to send data back to the camera.
+3. The wallet works out the amounts, the fee and your change by itself, using only the transaction data and your keys. It shows them on the touchscreen.
 4. You approve or reject on the touchscreen. If you approve, the wallet signs and shows the signed transaction as an animated QR code.
 5. Sparrow scans it with your webcam and broadcasts it.
 
-The seed is never stored. You load it each time you start the device, by typing the words or scanning a SeedQR, and it's wiped from memory when you choose **Wipe & lock** or leave the device idle for 5 minutes.
+The seed is never stored. You load it each time you start the device, either by typing the words or by scanning a SeedQR. It's wiped from memory when you choose **Wipe & lock** or when the device sits idle for 5 minutes.
 
 ## What's in this repo
 
@@ -65,15 +65,20 @@ tools/                PC-side helpers (Node.js)
 | Jumper wires | connections |
 | A computer with Sparrow Wallet and a webcam | building and broadcasting transactions |
 
-Wire it up using [docs/wiring.md](docs/wiring.md).
+To wire everything up, follow [docs/wiring.md](docs/wiring.md).
 
 ## Build and flash
 
 ### 1. Install the tools
-- [arduino-cli](https://arduino.github.io/arduino-cli/) (or the Arduino IDE)
-- ESP32 board support **3.3.10**: `arduino-cli core install esp32:esp32@3.3.10`
+
+You need [arduino-cli](https://arduino.github.io/arduino-cli/) or the Arduino IDE, plus ESP32 board support version **3.3.10**. With arduino-cli, you install the board support like this.
+
+```
+arduino-cli core install esp32:esp32@3.3.10
+```
 
 ### 2. Install the libraries
+
 | Library | Version | How |
 |---|---|---|
 | MCUFRIEND_kbv | 3.0.0-Release | Library Manager, then apply patches 1, 4 and 5 |
@@ -82,43 +87,52 @@ Wire it up using [docs/wiring.md](docs/wiring.md).
 | Adafruit TouchScreen | 1.1.6 | Library Manager |
 | uBitcoin | 0.2.0 + secret wiping | clone the [fork](https://github.com/muchai254/uBitcoin/tree/muchai254/secret_material_wiping) into your libraries folder, then apply patch 2 |
 
-The patches are in [docs/patches.md](docs/patches.md). Without them the firmware won't compile, or the board won't boot reliably.
+You'll find the patches in [docs/patches.md](docs/patches.md). Without them the firmware won't compile, or the board won't boot reliably.
 
 ### 3. Flash the ESP32-CAM
-Connect the USB-TTL adapter (see wiring.md §C), connect GPIO0 to GND, press RESET, then run:
+
+Connect the USB-TTL adapter as described in wiring.md §C. Then connect GPIO0 to GND, press RESET and run the upload.
+
 ```
 arduino-cli compile --upload -p <PORT> --fqbn esp32:esp32:esp32cam airgap_qrcam
 ```
-Remove the GPIO0 wire and press RESET.
+
+When it's done, remove the GPIO0 wire and press RESET again.
 
 ### 4. Flash the DevKit
-**Hold the BOOT button** for the whole upload. Release it when the upload finishes, then press EN.
+
+Hold the **BOOT** button down for the whole upload. When the upload finishes, release it and press EN.
+
 ```
 arduino-cli compile --upload -p <PORT> --fqbn esp32:esp32:esp32 airgap_wallet
 ```
-`arduino-cli upload` on its own doesn't recompile, so always use `compile --upload` after changing code.
 
-`config.h` holds touch calibration values for the author's screen. Yours will differ: set `TOUCH_CAL_VALID` to 0, flash, and the wallet runs calibration at boot. Copy the values it shows into `config.h` and set `TOUCH_CAL_VALID` back to 1.
+`arduino-cli upload` on its own doesn't recompile, so always use `compile --upload` after you change the code.
+
+The touch calibration values in `config.h` belong to the author's screen, and yours will be different. To calibrate, set `TOUCH_CAL_VALID` to 0 and flash. The wallet then runs calibration at boot. Copy the values it shows into `config.h` and set `TOUCH_CAL_VALID` back to 1.
 
 ### 5. Use it with Sparrow (signet)
-1. In Sparrow, switch to **signet**.
-2. On the device, load a seed. For testing, use the public test phrase `abandon` ×11 + `about` or generate a new one. **Never use a seed that holds real funds.**
-3. On the device choose **Export to Sparrow**, then scan the QR in Sparrow: New Wallet → Airgapped Hardware Wallet → pick a QR wallet entry (tested with "Era Wallet").
+
+1. Switch Sparrow to **signet**.
+2. Load a seed on the device. For testing, you can use the public test phrase `abandon` ×11 + `about` or generate a new one. **Never use a seed that holds real funds.**
+3. On the device, choose **Export to Sparrow**. In Sparrow, go to New Wallet → Airgapped Hardware Wallet, pick a QR wallet entry and scan the QR. It has been tested with "Era Wallet".
 4. Get signet coins from a signet faucet.
 5. Build a transaction in Sparrow and show it as a QR. **Set QR density to the lowest setting**, because the camera reads small codes much better.
-6. On the device, choose **Sign PSBT**, scan it, check each review screen, and approve.
-7. Scan the signed QR back into Sparrow and broadcast.
+6. On the device, choose **Sign PSBT**, scan the QR, check each review screen and approve.
+7. Scan the signed QR back into Sparrow and broadcast it.
 
-For a transaction with more than one input, Sparrow's QR leaves out data the device requires (see [protocol.md](docs/protocol.md#input-amounts-and-non_witness_utxo)). Save the PSBT to a file in Sparrow and show it with `node tools/psbt_show/show.js <file.psbt>`.
+When a transaction has more than one input, Sparrow's QR leaves out data the device requires. [protocol.md](docs/protocol.md#input-amounts-and-non_witness_utxo) explains why. For these transactions, save the PSBT to a file in Sparrow and show it with `node tools/psbt_show/show.js <file.psbt>`.
 
 ## Tests
 
-**On the device** (Dev tests menu):
-- **UR self-test:** UR decoder against the bc-ur vectors, hostile input and real Sparrow captures.
-- **PSBT self-test:** 82 PSBTs, valid and malicious, each of which must get the expected verdict.
-- **Key test vector:** derives the BIP84 test vectors and checks that no secret is left on the stack.
+The Dev tests menu on the device runs three checks.
 
-**On your computer** (Node.js 18 or later):
+- The UR self-test runs the UR decoder against the bc-ur vectors, hostile input and real Sparrow captures.
+- The PSBT self-test runs 82 PSBTs, both valid and malicious, and each one must get the expected verdict.
+- The key test vector derives the BIP84 test vectors and checks that no secret is left on the stack.
+
+On your computer, the tests need Node.js 18 or later.
+
 ```
 node tools/ur/test.js                          # UR decoder tests
 cd tools/cam_viewer
@@ -128,26 +142,31 @@ node tests/reconnect_test.js                   # serial reconnect
 cd ../..
 node tools/pc_checks/fingerprint.js            # expect 73c5da0a
 ```
-The camera tests use a stand-in for the serial port, so no board is needed.
-`tools/psbt_show` and `tools/cam_viewer` need `npm install` in their folders first.
 
-To rebuild the self-test data:
-- `node tools/psbt_fixtures/make_fixtures.js` writes `airgap_wallet/psbt_selftest_vectors.h`.
-- `node tools/ur/gen_selftest.js` writes `airgap_wallet/ur_selftest_vectors.h`. It needs Sparrow PSBT captures in `tools/ur/fixtures/`, which aren't included in this repo. Capture your own with `tools/cam_viewer/viewer.js --log`.
+The camera tests use a stand-in for the serial port, so you don't need a board. Before using `tools/psbt_show` or `tools/cam_viewer`, run `npm install` in its folder.
+
+To rebuild the self-test data, run these two generators.
+
+```
+node tools/psbt_fixtures/make_fixtures.js   # writes airgap_wallet/psbt_selftest_vectors.h
+node tools/ur/gen_selftest.js               # writes airgap_wallet/ur_selftest_vectors.h
+```
+
+The UR generator needs Sparrow PSBT captures in `tools/ur/fixtures/`. They aren't included in this repo, but you can capture your own with `tools/cam_viewer/viewer.js --log`.
 
 ## Security rules the code follows
 
-- **No stored seed.** Secrets are never written to flash, and the flash layout has no core-dump partition.
-- **No secrets on serial output**, ever.
-- **Everything from the camera is treated as hostile.** Every frame is checked, and PSBTs go through a strict parser written for BitForge.
-- **The scanned PSBT is never handed to uBitcoin.** The wallet signs a minimal PSBT it rebuilds from values it has verified itself.
-- **Secrets are wiped from RAM** after use: buffers, the stack and the free heap.
-- **No radio code.** Wi-Fi and Bluetooth are never included.
-- **Signet only.** Keys are always derived for signet.
+- The seed is never stored. Secrets are never written to flash, and the flash layout has no core-dump partition.
+- Secrets never appear on serial output.
+- Everything from the camera is treated as hostile. Every frame is checked, and PSBTs go through a strict parser written for BitForge.
+- The scanned PSBT is never handed to uBitcoin. Instead, the wallet signs a minimal PSBT that it rebuilds from values it has verified itself.
+- Secrets are wiped from RAM after use. That covers buffers, the stack and the free heap.
+- There is no radio code. Wi-Fi and Bluetooth are never included.
+- Everything is signet only, and keys are always derived for signet.
 
 ## Licence
 
-Code in this repo is under the [MIT licence](LICENSE). Some parts come from other projects and keep their own licences:
+Code in this repo is under the [MIT licence](LICENSE). Some parts come from other projects and keep their own licences.
 
 | Code | From | Licence |
 |---|---|---|
