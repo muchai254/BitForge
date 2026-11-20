@@ -18,8 +18,6 @@
 #define MAX_DICE     300
 #define WORDS_PER_PAGE 6
 
-// --- Dice entry ---
-
 // Lets the user type d6 rolls into `dice` ('1'..'6'). Only the count is shown,
 // never the rolls. Done is enabled from ENTROPY_MIN_DICE rolls on. Returns
 // false if cancelled (dice is then cleared).
@@ -62,8 +60,6 @@ static bool diceEntry(SecretBuffer<MAX_DICE + 1> &dice) {
     }
   }
 }
-
-// --- Generation ---
 
 static int progressPct = -1;
 static void progressBar(float f) {
@@ -187,11 +183,9 @@ void generateSeedScreen() {
   Serial.printf("[seed] backup quiz %s\n", passed ? "passed" : "not completed");
 }
 
-// --- Backup quiz ---
-
 #define QUIZ_QUESTIONS 3
 
-// One question: which word is at position pos (0-based)? Returns true if right.
+// Asks which word is at 0-based position pos. Returns true if answered right.
 static bool quizQuestion(int q, int pos) {
   char correct[12];
   if (!sessionWord(pos, correct, sizeof correct)) return false;
@@ -265,8 +259,6 @@ bool backupQuiz() {
   }
 }
 
-// --- SeedQR display ---
-
 // Shows the session seed as a SeedQR (compact by default, standard on
 // request), after a warning. For copying onto paper and for testing.
 static void showSeedQrScreen() {
@@ -306,8 +298,6 @@ static void showSeedQrScreen() {
   secure_scrub_stack(); // the encoder's working buffers held the seed
   tft.fillScreen(COL_BLACK);
 }
-
-// --- Word display ---
 
 void showWordsScreen() {
   if (!session.loaded) {

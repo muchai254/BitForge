@@ -1,4 +1,3 @@
-// Wiping secrets from RAM.
 #pragma once
 #include <stddef.h>
 #include <stdint.h>
@@ -7,19 +6,17 @@
 // Zeroes n bytes in a way the compiler can't optimise away.
 inline void secure_zero(void *p, size_t n) { mbedtls_platform_zeroize(p, n); }
 
-// Overwrites the calling task's unused stack (everything below the caller's
-// frame, except a small margin at the very bottom where FreeRTOS keeps its
-// overflow canary). Call it right after key work returns: whatever secrets
-// library code left in its stack frames are then gone. Fills with FreeRTOS's
-// stack fill byte (0xA5), so uxTaskGetStackHighWaterMark() keeps working; it
-// then reports usage since the last scrub. Returns the number of bytes wiped.
+// Overwrites the calling task's unused stack below the caller's frame (sparing
+// FreeRTOS's overflow canary at the bottom). Call right after key work returns
+// so secrets left in library stack frames are gone. Fills with 0xA5, so
+// uxTaskGetStackHighWaterMark() then reports usage since the last scrub.
+// Returns the number of bytes wiped.
 size_t secure_scrub_stack();
 
-// Zeroes the free heap: briefly allocates every free block it can get,
-// zeroes it, and frees it again. Use after freeing buffers that held secrets
-// we couldn't wipe ourselves (e.g. a driver's receive buffer). Returns the
-// number of bytes zeroed. Takes a few ms; nothing else can allocate while it
-// runs.
+// Zeroes the free heap by allocating, zeroing and freeing every free block.
+// For secrets in freed buffers we couldn't wipe ourselves (e.g. a driver's
+// receive buffer). Takes a few ms and starves other allocations meanwhile.
+// Returns the number of bytes zeroed.
 size_t secure_scrub_free_heap();
 
 // Fixed-capacity buffer for secret bytes or text (mnemonic, passphrase, seed).

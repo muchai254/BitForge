@@ -1,5 +1,6 @@
 // BIP380 descriptor checksum (port of Bitcoin Core descriptor.cpp), for
 // checking the C++ version and the descriptor the device will export.
+// Usage: node desc_checksum.js [<descriptor>]   (always runs the self-test)
 'use strict';
 const INPUT = "0123456789()[],'/*abcdefgh@:$%{}IJKLMNOPQRSTUVWXYZ&+-.;<=>?!^_|~ijklmnopqrstuvwxyzABCDEFGH`#\"\ ";
 const CHECK = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';

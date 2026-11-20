@@ -124,8 +124,6 @@ static int wordEntry(int n, int total, char *word) {
   return result;
 }
 
-// --- Flow ---
-
 static int progressPct = -1;
 static void progressBar(float f) {
   int pct = (int)(f * 100);
@@ -280,7 +278,7 @@ static void finishLoad(SecretBuffer<SESSION_MNEMONIC_CAP> &m, int total, const c
   char fp[9];
   snprintf(fp, sizeof fp, "%02x%02x%02x%02x", session.fingerprint[0], session.fingerprint[1],
            session.fingerprint[2], session.fingerprint[3]);
-  // Counts and the fingerprint only.
+  // Counts and the fingerprint only: never the words or passphrase.
   Serial.printf("[seed] loaded (%s): %d words, passphrase %s, fingerprint %s (stack scrubbed %u bytes)\n", how,
                 total, session.passphrase.size() ? "yes" : "no", fp, (unsigned)scrubbed);
 

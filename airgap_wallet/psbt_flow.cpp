@@ -113,8 +113,8 @@ static void progressBar(float f) {
   tft.fillRect(20, 200, (tft.width() - 40) * pct / 100, 12, COL_BTC_ORANGE);
 }
 
-// The account key of the loaded seed (public), self-checked like the address
-// screen does. False on failure.
+// Derives the loaded seed's public account key and self-checks it like the
+// address screen does. False on failure.
 static bool loadAccount(HDPublicKey &account) {
   tft.fillScreen(COL_BLACK);
   drawCentredText("Checking", 20, 2, COL_BTC_ORANGE);

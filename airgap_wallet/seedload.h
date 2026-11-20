@@ -1,7 +1,6 @@
-// Loading an existing seed by typing its words.
 #pragma once
 
-// Asks for 12 or 24 words (with BIP39 autocomplete), checks the checksum,
-// asks for an optional passphrase, and loads the seed into the session.
-// Always shows the resulting fingerprint.
+// Types 12/24 words (BIP39 autocomplete) or scans a SeedQR, verifies the
+// checksum, takes an optional passphrase, loads the session and shows the
+// fingerprint.
 void loadSeedScreen();

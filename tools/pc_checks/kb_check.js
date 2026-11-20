@@ -1,5 +1,6 @@
 // Parses KB_LAYOUT from ui.cpp (C string escapes) and checks that the pages
 // are 28 characters each and cover all 94 printable non-space characters.
+// Usage: node kb_check.js <path to ui.cpp>
 'use strict';
 const src = require('fs').readFileSync(process.argv[2], 'latin1');
 const block = src.match(/KB_LAYOUT\[4\]\[KB_CHARS \+ 1\] = \{([\s\S]*?)\};/)[1];

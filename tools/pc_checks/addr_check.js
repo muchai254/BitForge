@@ -1,5 +1,7 @@
 // Checks bech32 addresses and derives m/.../0/0 and /1/0 P2WPKH addresses
 // from a tpub (BIP32 public derivation, secp256k1 in BigInt). Public data only.
+// Usage: node addr_check.js <tpub> [<receive /0/0 addr> <change /1/0 addr>]
+//        node addr_check.js <tpub> --at <chain> <index> [<index>...]
 'use strict';
 const crypto = require('crypto');
 const [tpub, recv, chg] = process.argv.slice(2);
@@ -53,7 +55,6 @@ function encode(hrp, prog) { const d = [0].concat(convert(prog, 8, 5, true)); co
 function checksumOk(a) { const i = a.lastIndexOf('1'); const hrp = a.slice(0, i); const d = [...a.slice(i + 1)].map((c) => CH.indexOf(c)); return d.every((x) => x >= 0) && polymod(hrpExp(hrp).concat(d)) === 1; }
 const hash160 = (b) => crypto.createHash('ripemd160').update(sha(b)).digest();
 
-// "--at <chain> <index> [<index>...]": derive just those (e.g. --at 0 14 64).
 if (recv === '--at') {
   const c = ckdPub(chain, key, Number(chg));
   for (const i of process.argv.slice(5).map(Number)) {

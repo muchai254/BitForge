@@ -21,7 +21,6 @@ void drawCentredText(const char *text, int y, uint8_t size, uint16_t color) {
   tft.print(text);
 }
 
-// --- Bitcoin logo ---
 // Shape helpers work in "logo units": the circle has radius 100, y points down.
 static bool inRect(float x, float y, float x0, float y0, float x1, float y1) {
   return x >= x0 && x <= x1 && y >= y0 && y <= y1;

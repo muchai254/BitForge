@@ -1,4 +1,5 @@
 // Asks an Electrum server for its version and chain tip (read-only).
+// Usage: node electrum_probe.js <host> <ssl port>
 'use strict';
 const tls = require('tls');
 const [host, port] = [process.argv[2], Number(process.argv[3])];
@@ -17,7 +18,7 @@ s.on('data', (d) => {
     if (msg.id === 1) console.log('server.version:', JSON.stringify(msg.result || msg.error));
     if (msg.id === 2) {
       const h = msg.result.hex;
-      // Header bytes 4..36 = previous block hash (little-endian); bits at 72..76.
+      // nBits is at header bytes 72..76 (little-endian).
       const bits = Buffer.from(h, 'hex').readUInt32LE(72).toString(16);
       console.log(`tip height ${msg.result.height}, bits 0x${bits} (signet's fixed target is 0x1e0377ae)`);
       console.log(`round trip ${Date.now() - t0} ms`);

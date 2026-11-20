@@ -1,7 +1,7 @@
 // The transaction review on the device's own screen, the only display that
-// can be trusted. One screen per recipient,
-// then a summary. Reject is always the first button; Approve needs a
-// deliberate tap plus a confirmation (and another one for a high fee).
+// can be trusted: one screen per recipient, then a summary. Reject is always
+// the first button; Approve needs a deliberate tap plus a confirmation (and
+// another one for a high fee).
 #pragma once
 #include "psbt_review.h"
 

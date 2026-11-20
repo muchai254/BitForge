@@ -1,8 +1,7 @@
 // Shows a saved PSBT file as an animated UR:CRYPTO-PSBT QR in a browser page,
 // for the device's camera. Exists because Sparrow 2.5.5's QR leaves out the
 // previous transactions, while its saved files include them. The PC is
-// untrusted anyway: the device verifies everything,
-// and a tampered file only gets refused.
+// untrusted anyway: the device verifies everything, so a tampered file is refused.
 // Usage: node show.js <file.psbt> [--http 8766] [--fragment 75] [--ms 500]
 // Accepts binary, base64 or hex. Serves on localhost only.
 'use strict';

@@ -68,9 +68,9 @@ enum PsbtParseError {
   PSBT_ERR_TRUNCATED,   // a length runs past the end
   PSBT_ERR_FORMAT,      // malformed field (wrong key or value size, bad varint)
   PSBT_ERR_DUPLICATE,   // the same key twice in a map
-  PSBT_ERR_NO_TX,       // no unsigned transaction
+  PSBT_ERR_NO_TX,
   PSBT_ERR_TX,          // the unsigned transaction is malformed or not unsigned
-  PSBT_ERR_TOO_MANY,    // over PSBT_MAX_INPUTS / PSBT_MAX_OUTPUTS
+  PSBT_ERR_TOO_MANY,
   PSBT_ERR_VERSION,     // PSBT version other than 0
   PSBT_ERR_PREV_TX,     // a non_witness_utxo is malformed
   PSBT_ERR_TRAILING,    // bytes after the last output map

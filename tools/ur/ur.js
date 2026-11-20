@@ -2,7 +2,7 @@
 // reference decoder for BitForge, ported from Blockchain Commons' bc-ur
 // C++ library (BSD-2-Clause-Plus-Patent, see LICENSE-bc-ur.txt). It is the
 // yardstick for the wallet's C++ port: same algorithms, same test
-// vectors (test.js). The encoder is here only to run the upstream tests.
+// vectors (test.js). The encoder serves the upstream tests and psbt_show.
 'use strict';
 const crypto = require('crypto');
 
@@ -201,7 +201,7 @@ function decodePart(cbor) {
   return { seqNum: f[0], seqLen: f[1], messageLen: f[2], checksum: f[3], data: Buffer.from(d.bytes) };
 }
 
-// Fountain encoder (only for the upstream tests)
+// Fountain encoder (fountain-encoder.cpp)
 function findNominalFragmentLength(messageLen, minLen, maxLen) {
   const maxCount = Math.floor(messageLen / minLen);
   let len;

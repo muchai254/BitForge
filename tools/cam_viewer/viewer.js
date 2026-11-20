@@ -6,8 +6,6 @@
 // --log appends "<ms since start> <full decoded text>" for every scan (the
 // console shows only the first 80 characters). Never use it with real seeds:
 // the CAM doesn't echo SeedQRs, but other secrets could be scanned.
-//
-// Development tool only.
 'use strict';
 const http = require('http');
 const fs = require('fs');
@@ -217,7 +215,6 @@ function toBmp(f) {
   return b;
 }
 
-// HTTP server, localhost only.
 const page = fs.readFileSync(path.join(__dirname, 'index.html'));
 http.createServer((req, res) => {
   const url = new URL(req.url, 'http://localhost');
@@ -242,8 +239,8 @@ http.createServer((req, res) => {
     }));
   } else if (url.pathname === '/cmd' && req.method === 'POST') {
     const c = url.searchParams.get('c');
-    // l = flash LED; image tuning: e/E ae level,
-    // c/C contrast, b/B brightness, x auto/manual exposure, a/A exposure value, r reset.
+    // The CAM console commands: l flash LED, e/E ae level, c/C contrast,
+    // b/B brightness, x auto/manual exposure, a/A exposure value, r reset.
     if (['l', 'e', 'E', 'c', 'C', 'b', 'B', 'x', 'a', 'A', 'r'].includes(c) && port.isOpen) port.write(c);
     res.writeHead(204); res.end();
   } else {

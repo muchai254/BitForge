@@ -7,17 +7,17 @@
 
 class HDPublicKey;
 
-// Builds the PSBT the signing library gets: only the unsigned transaction,
-// each input's verified amount and script (as witness_utxo), and its verified
-// derivation. Call only for a Review with ok == true. The scanned PSBT itself
-// must never reach uBitcoin: its Tx parser reads input and output counts as a
-// single byte, so a transaction with 253+ inputs or outputs is misparsed and
-// corrupts the heap. Returns a malloc'ed buffer (caller frees), or nullptr.
+// Builds the PSBT the signing library gets: the unsigned transaction plus each
+// input's verified amount and script (as witness_utxo) and derivation. Only for
+// a Review with ok == true. The scanned PSBT itself must never reach uBitcoin:
+// its Tx parser reads input/output counts as one byte, so 253+ inputs or
+// outputs are misparsed and corrupt the heap. Returns a malloc'ed buffer
+// (caller frees), or nullptr.
 uint8_t *psbtBuildClean(const PsbtInfo &info, const Review &r, size_t *outLen);
 
-// Parses and verifies a PSBT against an account key. Fills r (r.ok false
-// with r.reason on any refusal, including parse errors). `info` is
-// scratch space the caller provides (it's large: keep it on the heap).
+// Parses and verifies a PSBT; r.ok is false with r.reason on any refusal
+// (parse errors included). `info` is caller scratch space (large: keep it on
+// the heap).
 void psbtCheck(const uint8_t *psbt, size_t len, const HDPublicKey &account, const uint8_t fp[4], PsbtInfo &info,
                Review &r);
 

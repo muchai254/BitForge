@@ -4,7 +4,6 @@
 
 #define BIP39_WORDS 2048
 
-// Word i (0..2047).
 const char *bip39Word(int i);
 
 // Index of the first word starting with prefix, and how many words do

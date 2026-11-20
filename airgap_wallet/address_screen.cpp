@@ -41,14 +41,14 @@ static void drawAddress(int chain, int index, const char *addr) {
   grouped(addr, g, sizeof g);
   tft.setTextSize(2);
   tft.setTextColor(COL_WHITE, COL_BLACK);
-  const int perLine = 20; // 4 groups of "xxxx " = 20 characters
+  const int perLine = 20;
   int y = 42;
   for (size_t off = 0; off < strlen(g); off += perLine, y += 20) {
     char line[24];
     size_t n = strlen(g + off);
     if (n > (size_t)perLine) n = perLine;
     memcpy(line, g + off, n);
-    while (n && line[n - 1] == ' ') n--; // no trailing gap
+    while (n && line[n - 1] == ' ') n--;
     line[n] = 0;
     tft.setCursor(6, y);
     tft.print(line);

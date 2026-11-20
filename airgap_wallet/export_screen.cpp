@@ -12,7 +12,6 @@
 #include "touch.h"
 #include "ui.h"
 
-// QR area: the full width, below a one-line title.
 #define QR_TOP 20
 #define QR_BOX 240
 
@@ -107,8 +106,6 @@ void exportScreen() {
   free(desc);
   free(keyOrigin);
 }
-
-// --- QR loopback test ---
 
 void qrLoopbackTestScreen() {
   bool selfOk = qrSelfTest();

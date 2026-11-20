@@ -5,9 +5,8 @@
 // setting: no exceptions, no STL, fixed limits, every length checked.
 // tools/ur/ur.js is the PC reference; both pass the upstream test vectors.
 //
-// Input comes from the camera, so it's treated as hostile: anything that
-// doesn't parse, doesn't match the first part, or exceeds a limit is refused
-// and never changes the decoder's state.
+// Camera input is hostile: anything that doesn't parse, doesn't match the
+// first part, or exceeds a limit is refused without changing decoder state.
 #pragma once
 #include <stddef.h>
 #include <stdint.h>
@@ -23,14 +22,12 @@ constexpr size_t MAX_TYPE = 24;
 
 uint32_t crc32(const uint8_t *data, size_t len);
 
-// Decodes minimal bytewords (2 letters per byte, case-insensitive) and checks
-// the trailing CRC-32. Writes the body (without the CRC) to out. Returns its
-// length, or -1 on any error (odd length, unknown word, too short, bad CRC,
-// out too small).
+// Decodes minimal bytewords (2 letters per byte, case-insensitive), checks the
+// trailing CRC-32 and writes the body without it. Returns its length or -1.
 int bytewordsDecodeMinimal(const char *s, size_t len, uint8_t *out, size_t outCap);
 
 // Encodes data + its CRC-32 as minimal bytewords, NUL-terminated. Returns the
-// length, or -1 if out is too small.
+// length or -1.
 int bytewordsEncodeMinimal(const uint8_t *data, size_t len, char *out, size_t outCap);
 
 // Wraps data as one CBOR byte string (out needs len + 5 bytes). Returns the
@@ -86,11 +83,11 @@ enum Status {
   ACCEPTED,    // new information (or a repeat of a part we couldn't use yet)
   DUPLICATE,   // nothing new
   COMPLETE,    // this part completed the message
-  NOT_UR,      // not a UR string at all
+  NOT_UR,
   INVALID,     // looks like a UR but is malformed (bad bytewords, CRC, CBOR...)
   WRONG_TYPE,  // a UR type we don't accept, or not the type of the first part
   OTHER_MESSAGE, // a part of a different message (other length/checksum)
-  TOO_LARGE,   // over a limit
+  TOO_LARGE,
   NO_MEMORY,
   FAILED,      // all fragments arrived but the message checksum is wrong
   ALREADY_DONE,
@@ -108,7 +105,6 @@ class Decoder {
   Status receive(const char *text, size_t len);
   bool isComplete() const { return done_ && !failed_; }
   bool isFailed() const { return failed_; }
-  // The CBOR message, once complete.
   const uint8_t *message() const { return isComplete() ? msg_ : nullptr; }
   size_t messageLen() const { return isComplete() ? messageLen_ : 0; }
   const char *type() const { return type_; }
@@ -120,7 +116,7 @@ class Decoder {
   // Zeroes and frees everything; ready for a new message.
   void reset();
 
-  // Largest number of mixed parts kept for this message (memory budget).
+  // Mixed-part slots the memory budget allows for this message.
   int maxMixed() const { return maxMixed_; }
 
  private:

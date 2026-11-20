@@ -1,4 +1,3 @@
-// Four-corner touch calibration.
 #pragma once
 #include "touch.h"
 

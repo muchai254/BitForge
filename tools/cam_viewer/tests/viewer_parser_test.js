@@ -34,7 +34,6 @@ const target = path.resolve(process.argv[2]);
 process.argv = process.argv.slice(0, 2);
 require(target);
 
-// Read /state through the stubbed HTTP handler.
 function getState() {
   let body = '';
   stateRef({ url: '/state?since=0', method: 'GET' }, { writeHead() {}, end(b) { body = b; } });
@@ -65,7 +64,6 @@ let stream = Buffer.concat(parts);
 stream = stream.subarray(5000);
 expectedScans -= 0; // the first QR line is after frame 7, so it isn't cut off
 
-// Drop single bytes at 10 random positions.
 const drops = [];
 for (let i = 0; i < 10; i++) drops.push(Math.floor(rnd() * stream.length));
 drops.sort((a, b) => b - a);

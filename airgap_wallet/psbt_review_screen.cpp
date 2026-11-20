@@ -17,8 +17,7 @@ void psbtRefusedScreen(const char *reason) {
   runButtons(&ok, 1);
 }
 
-// The full address, size 2, in groups of 4 (4 groups per line), as on the
-// address screen.
+// The full address in groups of 4, four groups per line (as on the address screen).
 static int drawAddressGrouped(const char *addr, int y, uint16_t color) {
   char g[REVIEW_ADDR_LEN * 5 / 4 + 4];
   size_t o = 0;

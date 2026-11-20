@@ -10,7 +10,7 @@
 
 namespace ur {
 
-// --- CRC-32 (ISO-HDLC) ---
+// CRC-32/ISO-HDLC (zlib): reflected poly 0xEDB88320, init/xorout 0xFFFFFFFF.
 uint32_t crc32(const uint8_t *data, size_t len) {
   uint32_t crc = 0xFFFFFFFF;
   for (size_t i = 0; i < len; i++) {
@@ -20,7 +20,6 @@ uint32_t crc32(const uint8_t *data, size_t len) {
   return crc ^ 0xFFFFFFFF;
 }
 
-// --- Bytewords ---
 static const char BYTEWORDS[] =
     "ableacidalsoapexaquaarchatomauntawayaxisbackbaldbarnbeltbetabiasbluebodybragbrewbulbbuzzcalmcashcatschefcityclaw"
     "codecolacookcostcruxcurlcuspcyandarkdatadaysdelidicedietdoordowndrawdropdrumdulldutyeacheasyechoedgeepicevenexam"
@@ -68,7 +67,6 @@ int bytewordsDecodeMinimal(const char *s, size_t len, uint8_t *out, size_t outCa
   return want == got ? (int)(n - 4) : -1;
 }
 
-// --- Xoshiro256** ---
 static inline uint64_t rotl(uint64_t x, int k) { return (x << k) | (x >> (64 - k)); }
 
 Xoshiro256::Xoshiro256(const uint8_t *seed, size_t len) {
@@ -98,7 +96,7 @@ uint32_t Xoshiro256::nextInt(uint32_t low, uint32_t high) {
   return (uint32_t)(nextDouble() * (double)((uint64_t)high - low + 1)) + low;
 }
 
-// --- Degree sampler (Vose's alias method, random-sampler.cpp) ---
+// Vose's alias method, as in random-sampler.cpp.
 void DegreeSampler::release() {
   free(probs_);
   free(aliases_);
@@ -149,7 +147,6 @@ uint32_t DegreeSampler::next(Xoshiro256 &rng) {
   return r2 < probs_[i] ? i : aliases_[i];
 }
 
-// --- Fragment choice (fountain-utils.cpp) ---
 static inline void setBit(uint8_t *b, uint32_t i) { b[i >> 3] |= (uint8_t)(1u << (i & 7)); }
 static inline bool getBit(const uint8_t *b, uint32_t i) { return (b[i >> 3] >> (i & 7)) & 1; }
 static inline void clearBit(uint8_t *b, uint32_t i) { b[i >> 3] &= (uint8_t)~(1u << (i & 7)); }
@@ -178,8 +175,7 @@ uint32_t chooseFragments(uint32_t seqNum, uint32_t seqLen, uint32_t checksum, De
   return degree;
 }
 
-// --- Minimal CBOR ---
-// Reads one head at buf[*pos]. Only what a part needs: values up to 32 bits.
+// Reads one CBOR head at buf[*pos]. Only what a part needs: values up to 32 bits.
 static bool cborHead(const uint8_t *buf, size_t len, size_t *pos, uint8_t *major, uint32_t *value) {
   if (*pos >= len) return false;
   uint8_t ib = buf[(*pos)++];
@@ -239,7 +235,6 @@ const char *statusName(Status s) {
   return "?";
 }
 
-// --- Decoder ---
 // Mixed parts may use at most this much heap, whatever the fragment size.
 static const size_t MIXED_BUDGET = 32 * 1024;
 static const size_t PART_BUF = MAX_FRAGMENT + 32; // fragment + CBOR header
@@ -537,7 +532,6 @@ Status Decoder::finish() {
   return failed_ ? FAILED : COMPLETE;
 }
 
-// --- Encoder ---
 int bytewordsEncodeMinimal(const uint8_t *data, size_t len, char *out, size_t outCap) {
   if ((len + 4) * 2 + 1 > outCap) return -1;
   uint32_t c = crc32(data, len);

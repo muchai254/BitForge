@@ -88,17 +88,15 @@ void messageScreen(const char *title, const char *message) {
   runButtons(&ok, 1);
 }
 
-// --- Keyboard ---
-// All 95 printable ASCII characters (a BIP39 passphrase can contain any of
-// them). 7 x 4 character keys plus a control row:
+// 7 x 4 character keys plus a control row:
 //   [Shift] [123] [  space  ] [DEL] [OK]
 // Pages: letters (Shift toggles case), "123" (digits + common symbols),
 // "#+=" (the remaining symbols).
 static const int KB_COLS = 7, KB_ROWS = 4;
 static const int KB_TOP = 140, KB_KEY_W = 34, KB_KEY_H = 35;
 static const int KB_LEFT = (240 - KB_COLS * KB_KEY_W) / 2;
-static const int KB_CTRL_Y = KB_TOP + KB_ROWS * KB_KEY_H; // 280
-static const int KB_CHARS = KB_COLS * KB_ROWS;            // 28
+static const int KB_CTRL_Y = KB_TOP + KB_ROWS * KB_KEY_H;
+static const int KB_CHARS = KB_COLS * KB_ROWS;
 
 enum KbPage { KB_LOWER, KB_UPPER, KB_SYM1, KB_SYM2 };
 // 28 characters per page; a space means "no key here".

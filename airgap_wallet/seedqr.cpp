@@ -29,7 +29,6 @@ size_t seedqrEncode(const char *mnemonic, SeedQrFormat fmt, SecretBuffer<97> &ou
     return n;
   }
   if (fmt != SEEDQR_STANDARD) return 0;
-  // Standard: walk the words, 4 digits per word index.
   const char *p = mnemonic;
   char word[12], digits[5];
   int words = 0;

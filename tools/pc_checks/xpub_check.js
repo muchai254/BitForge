@@ -1,4 +1,5 @@
 // Decodes a BIP32 extended public key (base58check) and prints its fields.
+// Usage: node xpub_check.js <xpub|tpub>
 'use strict';
 const crypto = require('crypto');
 const A = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';

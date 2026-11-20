@@ -20,7 +20,6 @@ struct Session {
 
 extern Session session;
 
-// Securely wipes everything in the session.
 void sessionWipe();
 
 // Copies word n (0-based) of the session mnemonic into out (cap >= 9).

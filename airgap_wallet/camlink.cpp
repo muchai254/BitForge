@@ -177,8 +177,8 @@ static bool feed(uint8_t b) {
 }
 
 static void onRxError(hardwareSerial_error_t err) {
-  if (err == UART_BUFFER_FULL_ERROR) stats.rxOverflow++;     // our ring buffer was full
-  else if (err == UART_FIFO_OVF_ERROR) stats.rxFifoOverflow++; // the hardware FIFO wasn't drained in time
+  if (err == UART_BUFFER_FULL_ERROR) stats.rxOverflow++;
+  else if (err == UART_FIFO_OVF_ERROR) stats.rxFifoOverflow++;
 }
 
 void camlinkBegin() {

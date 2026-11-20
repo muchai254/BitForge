@@ -15,10 +15,9 @@
 //     4-bit grayscale (two pixels per byte, high nibble first), then "\n"
 //     (160x120, up to 10 times a second) for tools/cam_viewer.
 //     <codes> = QR codes quirc located in that frame (decoded or not).
-//     The trailing "\n" makes every text line after a frame start a fresh
-//     line, so a reader that loses bytes resyncs at the next line.
-//     The preview goes through a TX ring buffer and is skipped while the
-//     previous one is still being sent, so it never stalls decoding.
+//     The trailing "\n" lets a reader that lost bytes resync at the next
+//     line. A preview is skipped while the previous one is still in the TX
+//     buffer, so it never stalls decoding.
 // The red LED on the back blinks whenever a new QR payload is decoded.
 #include <esp_camera.h>
 #include <esp_heap_caps.h>
@@ -72,7 +71,6 @@ static uint32_t statSince = 0;
 // Time per stage, summed over the stats interval (microseconds).
 static uint64_t usGrab = 0, usEnd = 0, usDecode = 0;
 
-// Duplicate suppression.
 static uint32_t lastCrc = 0;
 static size_t lastLen = 0;
 static uint32_t lastSentMs = 0;
@@ -236,7 +234,7 @@ static bool previewFits() {
 static void sendPreview(int codes) {
   Serial.printf("@FRM4 %d %d %d %d\n", PREVIEW_W, PREVIEW_H, PREVIEW_BYTES, codes);
   Serial.write(preview, sizeof preview);
-  Serial.write('\n'); // ends the frame; see the header comment
+  Serial.write('\n'); // ends the frame so readers can resync
 }
 
 // Same test as the wallet's seedqrLooksLike(): Standard SeedQR = 48/96 digits,

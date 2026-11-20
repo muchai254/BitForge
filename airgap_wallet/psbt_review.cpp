@@ -7,7 +7,7 @@
 
 static const uint64_t MAX_MONEY = 2100000000000000ull; // 21M BTC in sats
 static const uint32_t HARDENED = 0x80000000u;
-static const uint32_t PATH_PREFIX[3] = {84 | HARDENED, 1 | HARDENED, 0 | HARDENED}; // m/84'/1'/0'
+static const uint32_t PATH_PREFIX[3] = {84 | HARDENED, 1 | HARDENED, 0 | HARDENED};
 
 void formatSats(uint64_t sats, char *out, size_t cap) {
   char digits[24];
@@ -45,7 +45,6 @@ static void fail(Review &r, const char *fmt, unsigned a = 0, unsigned b = 0) {
   snprintf(r.reason, sizeof r.reason, fmt, a, b);
 }
 
-// Our P2WPKH script for a compressed pubkey: 0x00 0x14 <hash160>.
 static void p2wpkhScript(const uint8_t pub[33], uint8_t script[22]) {
   script[0] = 0x00;
   script[1] = 0x14;
@@ -187,7 +186,7 @@ void psbtReview(const PsbtInfo &psbt, const HDPublicKey &account, const uint8_t 
         ro.kind = chain == 1 ? OUT_CHANGE : OUT_SELF;
         ro.index = index;
       } else if (own != NOT_CLAIMED) {
-        ro.claimFailed = true; // says it's ours, isn't: shown as a recipient, with a warning
+        ro.claimFailed = true; // shown as a recipient, with a warning
       }
     }
     if (ro.kind == OUT_CHANGE) r.changeTotal += o.amount;

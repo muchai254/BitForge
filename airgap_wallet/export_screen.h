@@ -1,4 +1,3 @@
-// Watch-only export to Sparrow, and the QR loopback test.
 #pragma once
 
 // Shows the session's BIP84 signet account as a QR for Sparrow, in two

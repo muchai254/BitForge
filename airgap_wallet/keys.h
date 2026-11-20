@@ -3,12 +3,9 @@
 #pragma once
 #include <Arduino.h>
 
-// Derives the public BIP39 test mnemonic on signet and compares the master
-// fingerprint, account tpub, and first receive and change addresses with the
-// values Sparrow produced. Prints each value with OK/FAIL to Serial: allowed
-// only because this mnemonic is a public test vector. Shows the result on the
-// TFT.
-// Returns true if all four match.
+// Checks the public BIP39 test mnemonic against Sparrow's values (fingerprint,
+// tpub, first receive/change address). Printing them to Serial is allowed only
+// because this mnemonic is public. Returns true if all match.
 bool keysRunTestVector();
 
 // Master fingerprint of a BIP39 mnemonic + passphrase (signet). The caller

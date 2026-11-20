@@ -12,9 +12,9 @@
 #include "ui.h"
 #include "src/ur/ur.h"
 
-// Noinline, so all key material sits in frames below the caller and
-// secure_scrub_stack() in the caller wipes it. The destructors of root and of
-// the keys inside PSBT::sign zero them too (uBitcoin memzero, patch 7 in docs/patches.md).
+// Noinline, so all key material sits in frames below the caller, where
+// secure_scrub_stack() wipes it. The destructors of root and of the keys inside
+// PSBT::sign zero them too (uBitcoin memzero, patch 7 in docs/patches.md).
 __attribute__((noinline)) static uint8_t signWithSeed(PSBT &lib, uint8_t fp[4], void (*progress)(float)) {
   HDPrivateKey root(session.mnemonic.c_str(), session.mnemonic.size(), session.passphrase.c_str(),
                     session.passphrase.size(), &Signet, progress);
@@ -190,7 +190,6 @@ void psbtShowSignedScreen(const uint8_t *psbt, size_t len) {
       logged = true;
     }
     frames++;
-    // Hold the frame, watching the buttons.
     uint32_t until = millis() + FRAME_MS;
     do {
       TouchEvent e = touchPoll();

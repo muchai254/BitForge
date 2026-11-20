@@ -112,7 +112,7 @@ void scanTestScreen() {
   uint32_t count = 0, lastStatsMs = millis(), lastLogMs = millis(), lastDrawMs = 0;
   bool backHeld = false, drawPending = false;
   while (true) {
-    while (camlinkPoll()) { // take everything that has arrived
+    while (camlinkPoll()) {
       count++;
       drawPending = true;
       // Length and CRC only: payloads are never printed. Not even the CRC
@@ -128,8 +128,6 @@ void scanTestScreen() {
     }
     uint32_t now = millis();
     if (drawPending && now - lastDrawMs >= REDRAW_MS) {
-      // camlinkPayload() still holds the newest valid payload: rejected
-      // frames never touch it.
       drawPayload(count);
       drawStats();
       drawPending = false;

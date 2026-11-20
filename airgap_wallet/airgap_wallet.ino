@@ -48,11 +48,7 @@ static void bootScreen(uint16_t id) {
   drawCentredText(buf, 300, 1, COL_GREY);
 }
 
-// --- Demo screens ---
-
-// Draws a dot wherever the panel is touched and shows the coordinates, so
-// accuracy can be checked right up to the edges. Also counts presses, to spot
-// ghost touches while the screen is left alone.
+// Checks touch accuracy up to the edges; the press counter exposes ghost touches.
 static void touchTestScreen() {
   const Button back = {150, 280, 84, 36, "Back", COL_GREY, COL_BLACK, 2};
   tft.fillScreen(COL_BLACK);
@@ -97,7 +93,6 @@ static void touchTestScreen() {
 }
 
 static void keyboardTestScreen() {
-  // Demo text only. Real seed-word entry must never print to Serial.
   char text[33]; // long enough to try the size-2 view (> 11 characters)
   size_t n = keyboardInput("Type anything", text, sizeof text);
   // Length only: people may type real passphrases on test screens too.
@@ -196,7 +191,6 @@ static void wipeAndLockScreen() {
   lockNow(); // the lock task wipes everything and restarts
 }
 
-// Explains, after the restart, why the device restarted.
 static void showLockReason(LockReason r) {
   if (r == LOCK_NONE) return;
   tft.fillScreen(COL_BLACK);
@@ -213,7 +207,6 @@ static void showLockReason(LockReason r) {
 enum MenuAction { M_SIGN, M_GENERATE, M_LOAD, M_ADDRESSES, M_SHOW_WORDS, M_EXPORT, M_WIPE, M_TEST_VECTOR, M_SCAN, M_DEV };
 
 void loop() {
-  // The menu depends on whether a seed is loaded.
   Button menu[7];
   MenuAction action[7];
   int n = 0;
@@ -231,7 +224,7 @@ void loop() {
   } else {
     add("Generate seed", COL_BTC_ORANGE, M_GENERATE);
     add("Load seed", COL_BTC_ORANGE, M_LOAD);
-    add("Key test vector", COL_GREY, M_TEST_VECTOR); // runs without a seed
+    add("Key test vector", COL_GREY, M_TEST_VECTOR);
   }
   add("Scan test", COL_GREY, M_SCAN);
   add("Dev tests", COL_GREY, M_DEV);

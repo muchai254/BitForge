@@ -11,7 +11,7 @@
 
 static int failures;
 
-// Compares a verdict with what the fixture expects. Empty string = as expected.
+// Leaves `why` empty if the verdict matches the fixture.
 static void compare(const PtCase &c, const Review &r, char *why, size_t cap) {
   why[0] = 0;
   if (r.ok != c.ok) {

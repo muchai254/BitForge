@@ -3,9 +3,8 @@
 //
 //   node link_check.js [--port COM3] [--baud 115200]
 //
-// Every frame is validated with the wallet's receiver rules and
-// printed as OK or REJECT <reason>. A summary is printed every 10 s and on
-// Ctrl+C. Development tool only.
+// Each frame is checked with the wallet's receiver rules and printed as OK or
+// REJECT <reason>; a summary is printed every 10 s and on Ctrl+C.
 'use strict';
 const { SerialPort } = require('serialport');
 

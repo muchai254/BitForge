@@ -1,11 +1,9 @@
-// New-seed generation and word display.
 #pragma once
 
 // Generates a new 24-word seed from the hardware RNG (plus optional dice
-// rolls), stores it in the session and shows it. Runs until done or cancelled.
+// rolls), stores it in the session and shows it.
 void generateSeedScreen();
 
-// Shows the session's words, 6 per screen, numbered.
 void showWordsScreen();
 
 // Asks for 3 random word positions (multiple choice). On a wrong answer the

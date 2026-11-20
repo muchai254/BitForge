@@ -18,8 +18,6 @@ extern MCUFRIEND_kbv tft;
 // Returns the ID that was read.
 uint16_t displayBegin();
 
-// Draws the Bitcoin logo (orange disc with a tilted white "B") centred at
-// (cx, cy) with radius r.
 void drawBitcoinLogo(int cx, int cy, int r);
 
 // Prints text horizontally centred on the screen at y.

@@ -1,4 +1,5 @@
 // Checks headers from an Electrum server against their own claimed PoW target.
+// Usage: node pow_check.js <host> <ssl port>
 'use strict';
 const tls = require('tls');
 const crypto = require('crypto');

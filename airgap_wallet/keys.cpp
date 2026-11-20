@@ -101,9 +101,9 @@ __attribute__((noinline)) void keysAccount(const char *mnemonic, size_t mnemonic
   for (int i = 0; i < 2; i++) changeChain.child(i).address(out.change[i], sizeof out.change[i]);
 }
 
-// --- Leak check: are raw copies of the test seed / master key left on the stack? ---
-// Secret material of the test vector, computed independently with mbedtls:
-// BIP39 seed (64 B), master private key (32 B), master chain code (32 B).
+// Stack leak check: are raw copies of the test vector's secrets left on the
+// stack? Reference: BIP39 seed (64 B), master private key (32 B), master chain
+// code (32 B), computed independently with mbedtls.
 #define LEAK_SECRET_LEN 128
 #define LEAK_CHUNK 16
 
@@ -131,7 +131,7 @@ __attribute__((noinline)) static int countStackLeaks(const uint8_t *secret) {
     for (const uint8_t *p = bottom; p + LEAK_CHUNK <= top; p++) {
       if (p[0] == needle[0] && memcmp(p, needle, LEAK_CHUNK) == 0) {
         found++;
-        break; // count each chunk once
+        break;
       }
     }
   }

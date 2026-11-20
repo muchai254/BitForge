@@ -53,7 +53,7 @@ static void drawScreen() {
   drawButton(restartButton, false);
 }
 
-// The PSBT from a single base64 QR. False if it isn't valid base64.
+// Mallocs *out. False if it isn't valid base64 or is over PSBT_MAX_BYTES.
 static bool decodeBase64(const uint8_t *p, size_t n, uint8_t **out, size_t *outLen) {
   size_t need = 0;
   mbedtls_base64_decode(nullptr, 0, &need, p, n); // sizes the output
