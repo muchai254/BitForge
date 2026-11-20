@@ -4,8 +4,8 @@
 
 BitForge is an air-gapped Bitcoin signing device you can build from common hobby boards. You need an ESP32 DevKit, an ESP32-CAM and a 2.8" touchscreen shield. It works with [Sparrow Wallet](https://sparrowwallet.com) on your computer, and the two only ever exchange data through QR codes. There is no USB data, Wi-Fi or Bluetooth link between them.
 
-> ⚠ **This is a prototype for signet, Bitcoin's test network. Never use it with real funds or a real seed.**
-> It has no secure element and no secure boot. The ESP32 also has a radio, which the firmware doesn't use but which is still there. The firmware is hard-coded to signet.
+> ⚠ **This is a prototype on signet. Never use it with real funds or a real seed.**
+
 
 ## How it works
 
